@@ -1,0 +1,15 @@
+artifact_uri: file:///E:/ML_Projects_iNeuron/iNeuron_Project_Census_data_Classification_With_MLflow/mlruns/0/191812ce49c04585a4a4c1f3dd449a94/artifacts
+end_time: 1745002211905
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 191812ce49c04585a4a4c1f3dd449a94
+run_name: peaceful-robin-757
+run_uuid: 191812ce49c04585a4a4c1f3dd449a94
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745002198545
+status: 3
+tags: []
+user_id: Admin
