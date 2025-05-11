@@ -1,161 +1,177 @@
-#ML project with MLflow
+# 📦 End-to-End Machine Learning Project with MLflow & AWS CI/CD Deployment
 
-## Workflow
+This project demonstrates a complete machine learning workflow — from model development to experiment tracking with **MLflow**, and automated deployment using **Docker, GitHub Actions**, and **AWS (ECR + EC2)**.
 
-1. Update config.yaml
-2. Update schema.yaml
-3. Update params.yaml
-4. Update the entity
-5. Update the configuration manager in src config
-6. Update the components
-7. Update the pipeline 
-8. Update the main.py
-9. Update the app.py
+---
 
+## 🚀 Project Workflow
 
-# How to run?
-### STEPS:
+1. Update `config.yaml`
+2. Update `schema.yaml`
+3. Update `params.yaml`
+4. Update the Entity module
+5. Update Configuration Manager in `src/config`
+6. Build components (data ingestion, model, etc.)
+7. Create pipelines to connect components
+8. Implement `main.py` (pipeline entry point)
+9. Build a Flask API in `app.py` for deployment
 
-Clone the repository
+---
+
+## 💠 How to Run Locally
+
+### 📁 Step 1: Clone the repository
 
 ```bash
-# https://github.com/entbappy/End-to-end-Machine-Learning-Project-with-MLflow
+git clone https://github.com/entbappy/End-to-end-Machine-Learning-Project-with-MLflow.git
+cd End-to-end-Machine-Learning-Project-with-MLflow
 ```
-### STEP 01- Create a conda environment after opening the repository
+
+### 🐍 Step 2: Create and activate conda environment
 
 ```bash
 conda create -n mlproj python=3.8 -y
-```
-
-```bash
 conda activate mlproj
 ```
 
+### 📦 Step 3: Install required packages
 
-### STEP 02- install the requirements
 ```bash
 pip install -r requirements.txt
 ```
 
+### ▶️ Step 4: Run the app
 
 ```bash
-# Finally run the following command
 python app.py
 ```
 
-Now,
-```bash
-open up you local host and port
-```
+Now open `http://localhost:5000` in your browser.
 
+---
 
+## 📊 Experiment Tracking with MLflow
 
-## MLflow
+MLflow is used to log experiments, parameters, metrics, and models.
 
-[Documentation](https://mlflow.org/docs/latest/index.html)
+### 📚 MLflow Docs
 
+[https://mlflow.org/docs/latest/index.html](https://mlflow.org/docs/latest/index.html)
 
-##### cmd
-- mlflow ui
-
-### dagshub
-[dagshub](https://dagshub.com/)
-
-MLFLOW_TRACKING_URI=
-MLFLOW_TRACKING_USERNAME=
-MLFLOW_TRACKING_PASSWORD= 
-python script.py
-
-Run this to SET as env variables in the VS code Env...
+### ▶️ Run MLflow UI locally
 
 ```bash
-
-set MLFLOW_TRACKING_URI=https://dagshub.com/ShreyasDominator/End_to_End_project_with_Mlflow.mlflow
-set MLFLOW_TRACKING_USERNAME=ShreyasDominator
-set MLFLOW_TRACKING_PASSWORD=c79b27cd042d93400b3a1099115f3899a027693f
+mlflow ui
 ```
 
+Then open: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
+### ☁️ Use MLflow with DagsHub
 
-# AWS-CICD-Deployment-with-Github-Actions
+If using DagsHub as MLflow backend:
 
-## 1. Login to AWS console.
+```bash
+set MLFLOW_TRACKING_URI=https://dagshub.com/<user>/<repo>.mlflow
+set MLFLOW_TRACKING_USERNAME=<your-username>
+set MLFLOW_TRACKING_PASSWORD=<your-password>
+```
 
-## 2. Create IAM user for deployment
+Replace with your actual credentials and repo.
 
-	#with specific access
+---
 
-	1. EC2 access : It is virtual machine
+## 🐳 Docker + AWS CI/CD with GitHub Actions
 
-	2. ECR: Elastic Container registry to save your docker image in aws
+### ✅ Prerequisites
 
+* AWS account
+* IAM user with permissions:
 
-	#Description: About the deployment
+  * `AmazonEC2FullAccess`
+  * `AmazonEC2ContainerRegistryFullAccess`
+* GitHub repository
+* EC2 instance (Ubuntu)
 
-	1. Build docker image of the source code
+---
 
-	2. Push your docker image to ECR
+### 🌐 Steps to Deploy
 
-	3. Launch Your EC2 
+#### 🛠️ 1. Create ECR Repository
 
-	4. Pull Your image from ECR in EC2
+Save the URI, e.g.:
 
-	5. Lauch your docker image in EC2
+```bash
+507319107220.dkr.ecr.us-west-1.amazonaws.com/mlops_project
+```
 
-	#Policy:
+#### 🔦 2. Launch EC2 Instance
 
-	1. AmazonEC2ContainerRegistryFullAccess
+Ubuntu recommended.
 
-	2. AmazonEC2FullAccess
+#### 🐳 3. Install Docker in EC2
 
-	
-## 3. Create ECR repo to store/save docker image
-    - Save the URI: 507319107220.dkr.ecr.us-west-1.amazonaws.com/mlops_project
+```bash
+sudo apt update && sudo apt upgrade -y
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker ubuntu
+newgrp docker
+```
 
-	
-## 4. Create EC2 machine (Ubuntu) 
+#### 🤖 4. Configure EC2 as GitHub Self-Hosted Runner
 
-## 5. Open EC2 and Install docker in EC2 Machine:
-	
-	
-	#optinal
+* Go to your repo > Settings > Actions > Runners > Add runner
+* Choose OS (Ubuntu) and run the setup commands on EC2.
 
-	sudo apt-get update -y
+#### 🔐 5. Set GitHub Secrets
 
-	sudo apt-get upgrade
-	
-	#required
+| Name                    | Value                                                |
+| ----------------------- | ---------------------------------------------------- |
+| `AWS_ACCESS_KEY_ID`     | Your AWS access key                                  |
+| `AWS_SECRET_ACCESS_KEY` | Your AWS secret key                                  |
+| `AWS_REGION`            | e.g., `us-west-1`                                    |
+| `AWS_ECR_LOGIN_URI`     | e.g., `507319107220.dkr.ecr.us-west-1.amazonaws.com` |
+| `ECR_REPOSITORY_NAME`   | e.g., `mlops_project`                                |
 
-	curl -fsSL https://get.docker.com -o get-docker.sh
+---
 
-	sudo sh get-docker.sh
+## ⚙️ What GitHub Actions Does
 
-	sudo usermod -aG docker ubuntu
+* Build Docker image of your ML app
+* Push image to Amazon ECR
+* SSH into EC2 instance
+* Pull image and run container with your Flask app
 
-	newgrp docker
-	
-# 6. Configure EC2 as self-hosted runner:
-    setting>actions>runner>new self hosted runner> choose os> then run command one by one
+---
 
+## ✅ Key Features
 
-# 7. Setup github secrets:
+* Full ML project pipeline with modular code
+* MLflow integration for tracking experiments
+* Dockerized application
+* CI/CD using GitHub Actions and AWS (ECR + EC2)
+* Scalable and production-ready architecture
 
-    AWS_ACCESS_KEY_ID=
+---
 
-    AWS_SECRET_ACCESS_KEY=
+## 💡 About MLflow
 
-    AWS_REGION = us-west-1
+MLflow enables:
 
-    AWS_ECR_LOGIN_URI = demo>>  566373416292.dkr.ecr.ap-south-1.amazonaws.com
+* Logging and comparing experiments
+* Registering and serving models
+* Production-grade deployment support
 
-    ECR_REPOSITORY_NAME = 
+---
 
+## 📬 Contact
 
+**Shreyas Mendhekar**
+[GitHub](https://github.com/shreyasmendhekar77)
+[LinkedIn](https://www.linkedin.com/in/shreyasmendhekar/)
 
+---
 
-## About MLflow 
-MLflow
+## 📄 License
 
- - Its Production Grade
- - Trace all of your expriements
- - Logging & tagging your model
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
