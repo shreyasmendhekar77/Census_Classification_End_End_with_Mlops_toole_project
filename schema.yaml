@@ -1,0 +1,16 @@
+COLUMNS:
+    age: int64,
+    workclass: int32,
+    fnlwgt: int64,
+    education: int32,
+    marital-status: int32,
+    occupation: int32,
+    sex: int32,
+    capital-gain: int64,
+    capital-loss: int64,
+    hours-per-week: int64,
+    country: int32,
+    salary: int32 
+
+TARGET_COLUMN:
+  name: salary
